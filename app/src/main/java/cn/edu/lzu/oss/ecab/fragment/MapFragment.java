@@ -1,24 +1,16 @@
 package cn.edu.lzu.oss.ecab.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.model.LatLng;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.util.Map;
 
 import cn.edu.lzu.oss.ecab.R;
 
@@ -26,6 +18,7 @@ public class MapFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private MapView mMapView;
     private BaiduMap mBaiduMap;
+    private SlidingUpPanelLayout panelLayout;
 
     public MapFragment() {
     }
@@ -39,14 +32,21 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         initMap(view);
-
+        initPanel(view);
 
         return view;
     }
 
+    private void initPanel(View view) {
+        panelLayout = view.findViewById(R.id.sliding_layout);
+
+    }
+
+
     private void initMap(View view) {
         mMapView = view.findViewById(R.id.baidu_maps);
         mBaiduMap = mMapView.getMap();
+
     }
 
     @Override
@@ -67,6 +67,6 @@ public class MapFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(View view);
+       void changePanelState(SlidingUpPanelLayout view);
     }
 }
