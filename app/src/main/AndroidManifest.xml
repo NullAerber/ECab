@@ -30,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.OrderActivity"/>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="M0bQryOSdqWPDDb48IOkbOgDsqjrYvBG" />
