@@ -15,7 +15,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import cn.edu.lzu.oss.ecab.R;
 
 public class MapFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private SlidingUpPanelLayout panelLayout;
@@ -25,6 +24,10 @@ public class MapFragment extends Fragment {
 
     public static MapFragment newInstance(){
         return new MapFragment();
+    }
+
+    public SlidingUpPanelLayout getPanel(){
+        return panelLayout;
     }
 
     @Override
@@ -49,24 +52,4 @@ public class MapFragment extends Fragment {
 
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-       void changePanelState(SlidingUpPanelLayout view);
-    }
 }

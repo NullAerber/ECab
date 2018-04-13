@@ -14,10 +14,19 @@ public class ItemFragment extends Fragment {
     private RecyclerView recyclerView;
     private ItemAdapter adapter;
 
+    public ItemFragment(){
+
+    }
+
+    public static ItemFragment newInstance(){
+        return new ItemFragment();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item,container,false);
+
         return view;
     }
 
