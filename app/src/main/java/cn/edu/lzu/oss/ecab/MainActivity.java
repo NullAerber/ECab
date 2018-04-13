@@ -19,13 +19,16 @@ import java.util.List;
 
 import cn.edu.lzu.oss.ecab.fragment.ItemFragment;
 import cn.edu.lzu.oss.ecab.fragment.MapFragment;
+import cn.edu.lzu.oss.ecab.interfaces.FragmentInterface;
 import cn.edu.lzu.oss.ecab.view.BaseViewPager;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
     private BaseViewPager viewPager;
     private List<Fragment> fragments;
     private SegmentTabLayout segmentTabLayout;
+    private FragmentInterface backInterfaceListener;
+    private boolean isActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +80,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        try {
-            ((MapFragment) getSupportFragmentManager().findFragmentByTag("")).getPanel().getPanelState();
-        } catch (Exception e) {
-            Log.i("Fail", "Fail to find MapFragment");
-        }
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (isActive && backInterfaceListener != null){
+            backInterfaceListener.onFragmentBackPress();
+        }else{
             super.onBackPressed();
         }
     }
@@ -114,4 +114,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void setBackInterfaceListener(FragmentInterface backInterfaceListener) {
+        this.backInterfaceListener = backInterfaceListener;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
