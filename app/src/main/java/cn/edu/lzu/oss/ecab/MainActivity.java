@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         segmentTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
+                backInterfaceListener.onFragmentBackPress();
                 viewPager.setCurrentItem(position);
             }
 
@@ -83,7 +84,10 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (isActive && backInterfaceListener != null){
-            backInterfaceListener.onFragmentBackPress();
+            boolean result = backInterfaceListener.onFragmentBackPress();
+            if (!result){
+                super.onBackPressed();
+            }
         }else{
             super.onBackPressed();
         }

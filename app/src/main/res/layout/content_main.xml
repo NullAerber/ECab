@@ -11,7 +11,7 @@
 
     <cn.edu.lzu.oss.ecab.view.BaseViewPager
         android:id="@+id/main_view_pager"
-        android:layout_width="381dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </cn.edu.lzu.oss.ecab.view.BaseViewPager>
@@ -26,7 +26,7 @@
         android:layout_gravity="center_horizontal"
         android:elevation="6dp"
         app:tl_bar_color="#000000"
-        app:tl_indicator_color="#2C97DE"
+        app:tl_indicator_color="#ffe100"
         app:tl_indicator_corner_radius="8dp"
         app:tl_tab_padding="20dp" />
 
