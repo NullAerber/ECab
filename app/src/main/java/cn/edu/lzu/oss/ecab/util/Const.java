@@ -6,4 +6,7 @@ public class Const {
         public static final int STATE_CONTAIN = 0x18;
     }
 
+    public class MapFragmentPermission{
+        public static final int BAIDU_READ_PHONE_STATE = 0x200;
+    }
 }

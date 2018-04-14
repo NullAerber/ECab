@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:layout_height="1000dp"
+
     tools:layout_editor_absoluteY="81dp">
 
     <TextView
@@ -14,7 +14,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +29,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginTop="8dp">
 
@@ -38,13 +37,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="80dp"
-                android:text="日期" />
+                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
-                android:text="请选择" />
+                 />
 
 
         </LinearLayout>
@@ -59,13 +58,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="80dp"
-                android:text="重量" />
+                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
-                android:text="请选择" />
+                 />
 
 
         </LinearLayout>
@@ -79,13 +78,13 @@
                 android:layout_margin="8dp"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:background="@color/colorAccent"/>
+                />
 
             <ImageView
                 android:layout_margin="8dp"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:background="@color/colorAccent"/>
+                />
 
         </LinearLayout>
 
@@ -94,7 +93,7 @@
             android:layout_margin="8dp"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@mipmap/ic_launcher"/>
+            />
 
 
 

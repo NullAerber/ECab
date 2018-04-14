@@ -1,4 +1,4 @@
-package cn.edu.lzu.oss.ecab;
+package cn.edu.lzu.oss.ecab.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +17,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.edu.lzu.oss.ecab.R;
 import cn.edu.lzu.oss.ecab.fragment.ItemFragment;
 import cn.edu.lzu.oss.ecab.fragment.MapFragment;
 import cn.edu.lzu.oss.ecab.interfaces.FragmentInterface;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         segmentTabLayout = findViewById(R.id.seg_tab);
-        segmentTabLayout.setTabData(new String[]{"aaa", "bbb"});
+        segmentTabLayout.setTabData(new String[]{"寄件", "取件"});
         segmentTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -98,21 +99,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
