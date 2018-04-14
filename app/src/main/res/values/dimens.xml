@@ -13,4 +13,7 @@
     <dimen name="fragment_item_height">80dp</dimen>
     <dimen name="fragment_item_image">64dp</dimen>
     <dimen name="recycler_view_margin_top">120dp</dimen>
+
+    <dimen name="activity_map_height">200dp</dimen>
+    <dimen name="activity_map_width">300dp</dimen>
 </resources>

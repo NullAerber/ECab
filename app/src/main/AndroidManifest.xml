@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.OrderActivity"/>
+        <activity android:name=".activities.ItemActivity"/>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="M0bQryOSdqWPDDb48IOkbOgDsqjrYvBG" />
