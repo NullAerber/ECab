@@ -1,11 +1,8 @@
 package cn.edu.lzu.oss.ecab.activities;
 
-import android.media.Image;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,11 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.flyco.tablayout.SegmentTabLayout;
-import com.flyco.tablayout.listener.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +20,8 @@ import java.util.List;
 import cn.edu.lzu.oss.ecab.R;
 import cn.edu.lzu.oss.ecab.fragment.ItemFragment;
 import cn.edu.lzu.oss.ecab.fragment.MapFragment;
-import cn.edu.lzu.oss.ecab.interfaces.FragmentInterface;
+import cn.edu.lzu.oss.ecab.interfaces.BackPressInterface;
+import cn.edu.lzu.oss.ecab.interfaces.UserClickInterface;
 import cn.edu.lzu.oss.ecab.util.WindowUtil;
 import cn.edu.lzu.oss.ecab.view.BaseViewPager;
 
@@ -36,8 +31,9 @@ public class MainActivity extends AppCompatActivity
     private ImageView receiveImage;
     private BaseViewPager viewPager;
     private List<Fragment> fragments;
-    private FragmentInterface backInterfaceListener;
+    private BackPressInterface backInterfaceListener;
     private boolean isActive = false;
+    private UserClickInterface clickInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +51,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initViews() {
+        clickInterface = new UserClickInterface() {
+            @Override
+            public boolean openDrawer() {
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                if (!drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.openDrawer(GravityCompat.START);
+                    return true;
+                } else
+                    return false;
+            }
+        };
+        MapFragment maps = MapFragment.newInstance();
+        maps.setClickInterface(clickInterface);
         fragments = new ArrayList<>();
-        fragments.add(MapFragment.newInstance());
+        fragments.add(maps);
         fragments.add(ItemFragment.newInstance());
         viewPager = findViewById(R.id.main_view_pager);
         viewPager.setScanScroll(false);
@@ -79,14 +88,27 @@ public class MainActivity extends AppCompatActivity
         List<ImageView> button = new ArrayList<>();
         button.add(sendImage);
         button.add(receiveImage);
-        int width = (int)(WindowUtil.getWIDTH() / 2.5);
+        int width = (int) (WindowUtil.getWIDTH() / 2.5);
         if (width != 0) {
-            for (ImageView x:button){
+            for (ImageView x : button) {
                 ViewGroup.LayoutParams params = x.getLayoutParams();
                 params.width = width;
                 x.setLayoutParams(params);
             }
         }
+        sendImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(0);
+            }
+        });
+        receiveImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(1);
+            }
+        });
+
 
     }
 
@@ -115,11 +137,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setBackInterfaceListener(FragmentInterface backInterfaceListener) {
+    public void setBackInterfaceListener(BackPressInterface backInterfaceListener) {
         this.backInterfaceListener = backInterfaceListener;
     }
 
     public void setActive(boolean active) {
         isActive = active;
     }
+
+
+
 }

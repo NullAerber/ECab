@@ -1,19 +1,13 @@
 package cn.edu.lzu.oss.ecab.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +31,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -48,13 +43,13 @@ import java.util.List;
 
 import cn.edu.lzu.oss.ecab.activities.MainActivity;
 import cn.edu.lzu.oss.ecab.R;
-import cn.edu.lzu.oss.ecab.interfaces.FragmentInterface;
+import cn.edu.lzu.oss.ecab.interfaces.BackPressInterface;
+import cn.edu.lzu.oss.ecab.interfaces.UserClickInterface;
 import cn.edu.lzu.oss.ecab.util.WindowUtil;
 
-import static android.support.v4.content.ContextCompat.checkSelfPermission;
 import static cn.edu.lzu.oss.ecab.util.Const.MapFragmentPermission.BAIDU_READ_PHONE_STATE;
 
-public class MapFragment extends Fragment implements FragmentInterface {
+public class MapFragment extends Fragment implements BackPressInterface {
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private SlidingUpPanelLayout panelLayout;
@@ -67,31 +62,12 @@ public class MapFragment extends Fragment implements FragmentInterface {
     private MyLocationData locData;
     private LocationClient mLocationClient;
     private MyBDAbstractLocationListener mLocationListener;
+    private LocationMode mCurrentMode = LocationMode.FOLLOWING;
     private boolean isFirstLocation = true;
+    private UserClickInterface clickInterface;
 
 
-    public class MyBDAbstractLocationListener extends BDAbstractLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation bdLocation) {
-            locData = new MyLocationData.Builder()
-                    .accuracy(bdLocation.getRadius())
-                    // 此处设置开发者获取到的方向信息，顺时针0-360
-                    .direction(100)
-                    .latitude(bdLocation.getLatitude())
-                    .longitude(bdLocation.getLongitude())
-                    .build();
-            mBaiduMap.setMyLocationData(locData);
-            if (isFirstLocation) {
-                //获取经纬度
-                LatLng ll = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
-                MapStatusUpdate status = MapStatusUpdateFactory.newLatLng(ll);
-                //mBaiduMap.setMapStatus(status);//直接到中间
-                mBaiduMap.animateMapStatus(status);//动画的方式到中间
-                isFirstLocation = false;
-                Log.i("位置：", bdLocation.getAddrStr() == null ? "null" : bdLocation.getAddrStr());
-            }
-        }
-    }
+
 
     public MapFragment() {
     }
@@ -112,18 +88,74 @@ public class MapFragment extends Fragment implements FragmentInterface {
         initMap(view);
         initPanel(view);
         initView(view);
+        initPosition();
         return view;
+    }
+
+    public void setClickInterface(UserClickInterface clickInterface) {
+        this.clickInterface = clickInterface;
+    }
+
+    private void initMap(View view) {
+        mMapView = view.findViewById(R.id.baidu_maps);
+        mMapView.removeViewAt(1);
+        mBaiduMap = mMapView.getMap();
+        MapStatus mMapStatus = new MapStatus.Builder().zoom(18).build();
+        MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+        mBaiduMap.setMapStatus(mMapStatusUpdate);
+        points = new ArrayList<>();
+        initPoints();
+        for (LatLng x : points) {
+            setMarker(x);
+        }
+        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+            public void onMapClick(LatLng point) {
+                if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }
+            }
+
+            public boolean onMapPoiClick(MapPoi poi) {
+                return false;
+            }
+        });
+        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            public boolean onMarkerClick(Marker marker) {
+                Log.i("id:", marker.getId());
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                return true;
+            }
+        });
+        mMapView.showScaleControl(false);
+        mMapView.showZoomControls(false);
+        mBaiduMap.setMyLocationEnabled(true);
     }
 
     private void initView(View view) {
         userImage = view.findViewById(R.id.image_user);
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean res = clickInterface.openDrawer();
+                if (!res) {
+                    Log.i("OpenDrawer", "error");
+                }
+            }
+        });
         locationImage = view.findViewById(R.id.image_now_location);
+        locationImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCurrentMode = LocationMode.FOLLOWING;
+                mLocationClient.requestLocation();
+            }
+        });
         List<ImageView> button = new ArrayList<>();
         button.add(userImage);
         button.add(locationImage);
         int length = WindowUtil.getWIDTH() / 6;
-        if (length != 0){
-            for (ImageView x : button){
+        if (length != 0) {
+            for (ImageView x : button) {
                 ViewGroup.LayoutParams params = x.getLayoutParams();
                 params.width = length;
                 params.height = length;
@@ -132,15 +164,41 @@ public class MapFragment extends Fragment implements FragmentInterface {
         }
 
         searchCard = view.findViewById(R.id.search_map_cardview);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)searchCard.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) searchCard.getLayoutParams();
         params.width = WindowUtil.getWIDTH() == 0 ? 240 : WindowUtil.getWIDTH() / 3 * 2;
         params.height = 120;
         params.topMargin = 320;
         searchCard.setLayoutParams(params);
     }
 
+    public class MyBDAbstractLocationListener extends BDAbstractLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            locData = new MyLocationData.Builder()
+                    .accuracy(bdLocation.getRadius())
+                    .direction(bdLocation.getDirection())
+                    .latitude(bdLocation.getLatitude())
+                    .longitude(bdLocation.getLongitude())
+                    .build();
+            MyLocationConfiguration config = new MyLocationConfiguration(
+                    mCurrentMode, true, null);
+            mBaiduMap.setMyLocationConfiguration(config);
+            mBaiduMap.setMyLocationData(locData);
+            if (mCurrentMode == LocationMode.FOLLOWING)
+                mCurrentMode = LocationMode.NORMAL;
+            if (isFirstLocation) {
+                LatLng ll = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+                MapStatusUpdate status = MapStatusUpdateFactory.newLatLng(ll);
+                mBaiduMap.animateMapStatus(status);//动画的方式到中间
+                isFirstLocation = false;
+                Log.i("位置：", bdLocation.getAddrStr() == null ? "null" : bdLocation.getAddrStr());
+            }
+        }
+    }
+
     private void initLocation() {
-        mLocationClient = new LocationClient(getContext().getApplicationContext());
+        Context context = getContext().getApplicationContext();
+        mLocationClient = new LocationClient(context);
         mLocationListener = new MyBDAbstractLocationListener();
         /*注册监听*/
         mLocationClient.registerLocationListener(mLocationListener);
@@ -163,43 +221,6 @@ public class MapFragment extends Fragment implements FragmentInterface {
         panelLayout = view.findViewById(R.id.sliding_layout);
     }
 
-
-    private void initMap(View view) {
-        mMapView = view.findViewById(R.id.baidu_maps);
-        mMapView.removeViewAt(1);
-        mBaiduMap = mMapView.getMap();
-        MapStatus mMapStatus = new MapStatus.Builder().zoom(18).build();
-        MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
-        mBaiduMap.setMapStatus(mMapStatusUpdate);
-        points = new ArrayList<>();
-        initPoints();
-        for (LatLng x : points) {
-            setMarker(x);
-        }
-        mBaiduMap.setMyLocationEnabled(true);
-        BaiduMap.OnMapClickListener listener = new BaiduMap.OnMapClickListener() {
-            public void onMapClick(LatLng point){
-                if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
-                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                }
-            }
-            public boolean onMapPoiClick(MapPoi poi){
-                return false;
-            }
-        };
-        mBaiduMap.setOnMapClickListener(listener);
-        BaiduMap.OnMarkerClickListener markerListener = new BaiduMap.OnMarkerClickListener() {
-            public boolean onMarkerClick(Marker marker){
-                Log.i("id:",marker.getId());
-                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                return true;
-            }
-        };
-        mBaiduMap.setOnMarkerClickListener(markerListener);
-        mMapView.showScaleControl(false);
-        mMapView.showZoomControls(false);
-        initPosition();
-    }
 
     private void initPosition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -235,7 +256,6 @@ public class MapFragment extends Fragment implements FragmentInterface {
     }
 
     private void initPoints() {
-//        points.add(new LatLng(39.963175, 116.400244));
         points.add(new LatLng(35.949121, 104.160009));
         points.add(new LatLng(35.94947, 104.16444));
     }
