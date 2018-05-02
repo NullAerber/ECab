@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +28,7 @@ public class ItemFragment extends Fragment {
     private RecyclerView recyclerView;
     private ItemAdapter adapter;
     private List<ItemDetail> items;
+    private ImageView background;
     public ItemFragment(){
 
     }
@@ -64,6 +67,8 @@ public class ItemFragment extends Fragment {
                 super.onDraw(c, parent, state);
             }
         });
+        background = view.findViewById(R.id.fragment_item_background);
+        Glide.with(getContext()).load(R.mipmap.background).into(background);
     }
 
     public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -80,7 +85,7 @@ public class ItemFragment extends Fragment {
             ItemDetail such = items.get(position);
             common.location.setText(such.getLocation());
             common.time.setText(such.getTime().toString());
-            common.size.setText(String.format(Locale.CHINA,"%dX%d",such.getWidth(),such.getHeight()));
+//            common.size.setText(String.format(Locale.CHINA,"%dX%d",such.getWidth(),such.getHeight()));
 
         }
 
@@ -95,7 +100,6 @@ public class ItemFragment extends Fragment {
             TextView size;
             View view;
             ImageView image;
-            ImageView button;
             NormalViewHolder(View itemView) {
                 super(itemView);
                 location = itemView.findViewById(R.id.fragment_item_detail_location);
@@ -103,7 +107,6 @@ public class ItemFragment extends Fragment {
                 size = itemView.findViewById(R.id.fragment_item_detail_size);
                 view = itemView.findViewById(R.id.fragment_item_view);
                 image = itemView.findViewById(R.id.fragment_item_image);
-                button = itemView.findViewById(R.id.fragment_item_show_detail);
 
             }
         }
