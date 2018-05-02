@@ -6,9 +6,9 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="fragment_map_header_height">128dp</dimen>
-    <dimen name="fragment_map_panel_height">172dp</dimen>
-    <dimen name="fragment_map_all_height">300dp</dimen>
+    <dimen name="fragment_map_header_height">64dp</dimen>
+    <dimen name="fragment_map_panel_height">216dp</dimen>
+    <dimen name="fragment_map_all_height">280dp</dimen>
 
     <dimen name="fragment_item_height">80dp</dimen>
     <dimen name="fragment_item_image">64dp</dimen>

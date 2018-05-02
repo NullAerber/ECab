@@ -18,11 +18,7 @@
         sothree:umanoPanelHeight="@dimen/fragment_map_header_height"
         sothree:umanoShadowHeight="4dp">
 
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/baidu_maps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </com.baidu.mapapi.map.MapView>
+        <include layout="@layout/fragment_map_mapview"/>
 
         <include layout="@layout/fragment_map_hidden"/>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
