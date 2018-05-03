@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_map_silding_panel_arc"
-        android:background="@drawable/arc"
+        android:layout_height="40dp"
+        android:background="@mipmap/arc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -16,9 +16,10 @@
     <TextView
         android:id="@+id/location"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_map_silding_panel_location_word"
-        android:background="@color/white"
+        android:layout_height="20dp"
+        android:background="#ffffff"
         android:gravity="center"
-        android:text="兰州大学 昆仑堂"
-        android:textSize="16sp" />
-</LinearLayout>
+        android:paddingLeft="10dp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>
