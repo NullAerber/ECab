@@ -264,6 +264,7 @@ public class MapFragment extends Fragment implements BackPressInterface {
     public boolean onFragmentBackPress() {
         if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+//            panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
             return true;
         } else
             return false;
