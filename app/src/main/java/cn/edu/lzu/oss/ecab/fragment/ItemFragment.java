@@ -1,114 +1,152 @@
 package cn.edu.lzu.oss.ecab.fragment;
 
-import android.graphics.Canvas;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
-import com.bumptech.glide.Glide;
+import com.dexafree.materialList.card.Card;
+import com.dexafree.materialList.card.CardProvider;
+import com.dexafree.materialList.card.OnActionClickListener;
+import com.dexafree.materialList.card.action.TextViewAction;
+import com.dexafree.materialList.view.MaterialListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import cn.edu.lzu.oss.ecab.R;
-import cn.edu.lzu.oss.ecab.javabean.ItemDetail;
-import cn.edu.lzu.oss.ecab.javabean.Times;
-import cn.edu.lzu.oss.ecab.util.Const;
+
 
 public class ItemFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private ItemAdapter adapter;
-    private List<ItemDetail> items;
-    private ImageView background;
-    public ItemFragment(){
-
-    }
+    List<Card> cards;
+    private MaterialListView mListView;
 
     public static ItemFragment newInstance(){
         return new ItemFragment();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item,container,false);
-        initView(view);
-        initData();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_get,container,false);
+
+        cards = new ArrayList<>();
+        mListView = view.findViewById(R.id.order_list);
+
+        cards.add(CreateNewCard("pic1"));
+        cards.add(CreateNewCard("pic2"));
+
+        mListView.getAdapter().addAll(cards);
+
         return view;
     }
 
-    private void initData() {
-        items = new ArrayList<>();
-        items.add(new ItemDetail("甘肃省兰州市榆中县兰州大学榆中校区通信网络中心二楼",
-                new Times(2018,4,13,9,54,10),
-                4 ,4, Const.TimeBeanConst.STATE_WAITING, "00000000"));
-        items.add(new ItemDetail("甘肃省兰州市城关区兰州大学图书馆",
-                new Times(2018,4,10,8,22,44),
-                2,2,Const.TimeBeanConst.STATE_CONTAIN, "00000001"));
+
+    private Card CreateNewCard(String name) {
+        final CardProvider provider = new Card.Builder(getContext())
+                .setTag("BIG_IMAGE_BUTTONS_CARD")
+                .setDismissible()
+                .withProvider(new CardProvider())
+                .setLayout(R.layout.material_image_with_buttons_card)
+                .setTitle("兰州大学 网络中心")
+                .setTitleColor(getResources().getColor(R.color.white))
+                .setDescription("存储大小：2X2")
+                .setDrawable(R.drawable.pic1)
+                .addAction(R.id.left_text_button, new TextViewAction(getContext())
+                        .setText("获取二维码")
+                        .setTextResourceColor(R.color.black_button)
+                        .setListener(new OnActionClickListener() {
+                            @Override
+                            public void onActionClicked(View view, Card card) {
+                                showCenterPopupWindow(mListView);
+                            }
+                        }))
+                .addAction(R.id.right_text_button, new TextViewAction(getContext())
+                        .setText("订单详情…")
+                        .setTextResourceColor(R.color.colorTheme)
+                        .setListener(new OnActionClickListener() {
+                            @Override
+                            public void onActionClicked(View view, Card card) {
+
+                            }
+                        }));
+
+//        final CardProvider provider = new Card.Builder(this)
+//                .setTag("BIG_IMAGE_BUTTONS_CARD")
+//                .setDismissible()
+//                .withProvider(new CardProvider())
+//                .setLayout(R.layout.material_image_with_buttons_card)
+//                .setTitle()
+//                .setTitleColor(getColor(R.color.white))
+//                .setDescription();
+//                .addAction(R.id.left_text_button, new TextViewAction(this)
+//                        .setTextResourceColor(R.color.colorTheme)
+//                        .setListener(new OnActionClickListener() {
+//                            @Override
+//                            public void onActionClicked(View view, Card card) {
+//                               startActivity(new Intent(ListActivity.this,MainActivity.class));
+//                            }
+//                        }))
+//                .addAction(R.id.right_text_button, new TextViewAction(this)
+//                        .setTextResourceColor(R.color.black_button)
+//                        .setListener(new OnActionClickListener() {
+//                            @Override
+//                            public void onActionClicked(View view, Card card) {
+//                                Toast.makeText(ListActivity.this, "You have pressed the right button", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }));
+
+        provider.setDrawable(getResources().getIdentifier(name, "drawable", getActivity().getPackageName()));
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+////                byte[] data = new byte[0];
+////                try {
+////                    data = ImageService.getImage(getString(R.string.LINKUSRL) + "cloth/" + id + ".jpg");
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+////                }
+////                final byte[] finalData = data;
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Resources res=getResources();
+//                        res.getIdentifier(name,"drawable",getPackageName());
+//                        provider.setDrawable(R.drawable.pic1);
+//                    }
+//                });
+//            }
+//        }).start();
+
+        return provider.endConfig().build();
     }
 
-    private void initView(View view) {
-        recyclerView = view.findViewById(R.id.fragment_item_recycler);
-        adapter = new ItemAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+    public void showCenterPopupWindow(View view) {
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_qrshow, null);
+        final PopupWindow popupWindow = new PopupWindow(contentView, 600, LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        // 设置PopupWindow以外部分的背景颜色  有一种变暗的效果
+        final WindowManager.LayoutParams wlBackground = getActivity().getWindow().getAttributes();
+        wlBackground.alpha = 0.5f;      // 0.0 完全不透明,1.0完全透明
+        getActivity().getWindow().setAttributes(wlBackground);
+        // 当PopupWindow消失时,恢复其为原来的颜色
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
+            public void onDismiss() {
+                wlBackground.alpha = 1.0f;
+                getActivity().getWindow().setAttributes(wlBackground);
             }
         });
-        background = view.findViewById(R.id.fragment_item_background);
-        Glide.with(getContext()).load(R.mipmap.background).into(background);
-    }
-
-    public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View common = LayoutInflater.from(getContext()).inflate(R.layout.fragment_item_item , parent , false);
-            return new NormalViewHolder(common);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            NormalViewHolder common = (NormalViewHolder) holder;
-            ItemDetail such = items.get(position);
-            common.location.setText(such.getLocation());
-            common.time.setText(such.getTime().toString());
-//            common.size.setText(String.format(Locale.CHINA,"%dX%d",such.getWidth(),such.getHeight()));
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return items == null ? 0 : items.size();
-        }
-
-        class NormalViewHolder extends RecyclerView.ViewHolder{
-            TextView location;
-            TextView time;
-            TextView size;
-            View view;
-            ImageView image;
-            NormalViewHolder(View itemView) {
-                super(itemView);
-                location = itemView.findViewById(R.id.fragment_item_detail_location);
-                time = itemView.findViewById(R.id.fragment_item_detail_time);
-                size = itemView.findViewById(R.id.fragment_item_detail_size);
-                view = itemView.findViewById(R.id.fragment_item_view);
-                image = itemView.findViewById(R.id.fragment_item_image);
-
-            }
-        }
+        //设置PopupWindow进入和退出动画
+        popupWindow.setAnimationStyle(R.style.anim_popup_centerbar);
+        // 设置PopupWindow显示在中间
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
 }
