@@ -10,7 +10,6 @@
         android:layout_height="@dimen/fragment_map_header_height">
         <include layout="@layout/fragment_map_show_header"/>
 
-
     </LinearLayout>
 
     <LinearLayout

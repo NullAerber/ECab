@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.MapFragment"
-    android:orientation="vertical">
-
-
-
+    android:orientation="vertical"
+    tools:context=".fragment.MapFragment">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
+        android:background="#00ffffff"
         sothree:umanoPanelHeight="@dimen/fragment_map_header_height"
         sothree:umanoShadowHeight="4dp">
 
-        <include layout="@layout/fragment_map_mapview"/>
+        <include layout="@layout/fragment_map_mapview" />
 
-        <include layout="@layout/fragment_map_hidden"/>
+        <include layout="@layout/fragment_map_hidden" />
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
