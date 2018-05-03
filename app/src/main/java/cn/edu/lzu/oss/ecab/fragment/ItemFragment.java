@@ -1,6 +1,5 @@
 package cn.edu.lzu.oss.ecab.fragment;
 
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.lzu.oss.ecab.R;
-import cn.edu.lzu.oss.ecab.activities.PayActivity;
 
 
 public class ItemFragment extends Fragment {
@@ -53,6 +51,7 @@ public class ItemFragment extends Fragment {
     private Card CreateNewCard(String name) {
         final CardProvider provider = new Card.Builder(getContext())
                 .setTag("BIG_IMAGE_BUTTONS_CARD")
+                .setDismissible()
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_image_with_buttons_card)
                 .setTitle("兰州大学 网络中心")
@@ -65,7 +64,7 @@ public class ItemFragment extends Fragment {
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
-                                getActivity().startActivity(new Intent(getActivity(), PayActivity.class));
+                                showCenterPopupWindow(mListView);
                             }
                         }))
                 .addAction(R.id.right_text_button, new TextViewAction(getContext())
@@ -126,5 +125,28 @@ public class ItemFragment extends Fragment {
 //        }).start();
 
         return provider.endConfig().build();
+    }
+
+    public void showCenterPopupWindow(View view) {
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_qrshow, null);
+        final PopupWindow popupWindow = new PopupWindow(contentView, 600, LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        // 设置PopupWindow以外部分的背景颜色  有一种变暗的效果
+        final WindowManager.LayoutParams wlBackground = getActivity().getWindow().getAttributes();
+        wlBackground.alpha = 0.5f;      // 0.0 完全不透明,1.0完全透明
+        getActivity().getWindow().setAttributes(wlBackground);
+        // 当PopupWindow消失时,恢复其为原来的颜色
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                wlBackground.alpha = 1.0f;
+                getActivity().getWindow().setAttributes(wlBackground);
+            }
+        });
+        //设置PopupWindow进入和退出动画
+        popupWindow.setAnimationStyle(R.style.anim_popup_centerbar);
+        // 设置PopupWindow显示在中间
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
 }
