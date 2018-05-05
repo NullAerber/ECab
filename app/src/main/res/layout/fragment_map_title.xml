@@ -16,7 +16,7 @@
         android:contentDescription="@string/send"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/send_1" />
+        app:srcCompat="@mipmap/send_no_select" />
 
     <ImageView
         android:id="@+id/image_receive"
@@ -29,5 +29,5 @@
         android:contentDescription="@string/receive"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/receive_1" />
+        app:srcCompat="@mipmap/receive_select" />
 </RelativeLayout>
