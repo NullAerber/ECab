@@ -66,7 +66,7 @@ public class ItemFragment2 extends Fragment {
             }
         });
         background = view.findViewById(R.id.fragment_item_background);
-        Glide.with(getContext()).load(R.mipmap.background).into(background);
+        Glide.with(getContext()).load(R.mipmap.splash).into(background);
     }
 
     public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

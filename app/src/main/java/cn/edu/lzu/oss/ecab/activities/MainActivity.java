@@ -1,5 +1,7 @@
 package cn.edu.lzu.oss.ecab.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -99,12 +101,16 @@ public class MainActivity extends AppCompatActivity
         sendImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.send_select));
+                receiveImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.receive_no_select));
                 viewPager.setCurrentItem(0);
             }
         });
         receiveImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.send_no_select));
+                receiveImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.receive_select));
                 viewPager.setCurrentItem(1);
             }
         });
