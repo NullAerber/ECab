@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/fragment_map_all_height">
+    android:layout_height="@dimen/fragment_map_all_height"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_map_header_height">
-        <include layout="@layout/fragment_map_show_header"/>
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_transparent">
 
+        <include layout="@layout/fragment_map_show_header" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fragment_map_panel_height">
-        <include layout="@layout/fragment_map_show_hidden"/>
+        android:layout_height="@dimen/fragment_map_panel_height"
+        android:background="@color/white">
+
+        <include layout="@layout/fragment_map_show_hidden" />
 
     </LinearLayout>
 

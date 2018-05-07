@@ -9,9 +9,13 @@
     <dimen name="fragment_map_header_height">64dp</dimen>
     <dimen name="fragment_map_panel_height">216dp</dimen>
     <dimen name="fragment_map_all_height">280dp</dimen>
+    <dimen name="fragment_map_silding_panel_arc">44dp</dimen>
+    <dimen name="fragment_map_silding_panel_location_word">26dp</dimen>
+    <dimen name="fragment_map_select_image_size">120dp</dimen>
 
     <dimen name="fragment_item_height">80dp</dimen>
     <dimen name="fragment_item_image">64dp</dimen>
+    <dimen name="fragment_item_banner_blank">40dp</dimen>
     <dimen name="recycler_view_margin_top">120dp</dimen>
 
     <dimen name="activity_map_height">200dp</dimen>

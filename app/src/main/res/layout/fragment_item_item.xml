@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/fragment_item_image"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="4dp"
-                android:background="@color/colorPrimary" />
+                android:background="@color/colorTheme" />
 
             <include
                 layout="@layout/fragment_item_detail"

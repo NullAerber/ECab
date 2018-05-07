@@ -1,27 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.MapFragment"
-    android:orientation="vertical">
+    android:gravity="bottom"
+    sothree:umanoDragView="@+id/dragView"
+    sothree:umanoOverlay="true"
+    sothree:umanoPanelHeight="68dp"
+    sothree:umanoParallaxOffset="100dp"
+    sothree:umanoScrollableView="@+id/list"
+    sothree:umanoShadowHeight="4dp">
 
+    <include layout="@layout/fragment_map_mapview" />
 
-
-
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/sliding_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoPanelHeight="@dimen/fragment_map_header_height"
-        sothree:umanoShadowHeight="4dp">
-
-        <include layout="@layout/fragment_map_mapview"/>
-
-        <include layout="@layout/fragment_map_hidden"/>
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-
-
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/fragment_map_hidden" />
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

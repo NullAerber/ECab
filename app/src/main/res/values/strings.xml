@@ -10,4 +10,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="send">寄件</string>
     <string name="receive">取件</string>
+    <string name="search_location">查找地点</string>
+
+
+    <string name="LINKUSRL">http://aerber.cn/EB/</string>
+    <string name="REQUEST_FAIL">后台服务器连接失败～</string>
+    <string name="NO_NETWORK">你没有连接网络～请确认你的网络连接！</string>
+    <string name="title_activity_qrshow">QRShowActivity</string>
+    <string name="title_activity_login">Sign in</string>
 </resources>
