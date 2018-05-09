@@ -102,7 +102,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
 
     private void initMap(View view) {
         mMapView = view.findViewById(R.id.baidu_maps);
-        mMapView.removeViewAt(1);
         mBaiduMap = mMapView.getMap();
         MapStatus mMapStatus = new MapStatus.Builder().zoom(18).build();
         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
@@ -155,7 +154,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
         View view = View.inflate(getContext(), R.layout.fragment_map_info_window, null);
         CardView cardView = view.findViewById(R.id.info_window_card);
         ViewGroup.LayoutParams params = cardView.getLayoutParams();
-        params.height = WindowUtil.getHEIGHT() / 4;
         params.width = WindowUtil.getWIDTH() / 10 * 8;
         cardView.setLayoutParams(params);
         return view;
@@ -294,7 +292,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
     public boolean onFragmentBackPress() {
         if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-//            panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
             return true;
         } else
             return false;
