@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'lzl32947'
             keyPassword 'lzl32947'
-            storeFile file('/home/aerberjoy/GitHub/ECab/key.jks')
+            storeFile file('G:/Program Files/Intellij Projects/Android Studio/SignedKeys/key.jks')
             storePassword 'lzl980223'
         }
     }

@@ -6,6 +6,6 @@
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/ic_location_on_red_400_36dp"/>
+        android:src="@mipmap/cab"/>
 
 </LinearLayout>

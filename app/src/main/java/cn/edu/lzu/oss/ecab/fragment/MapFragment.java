@@ -13,7 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -23,6 +26,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -66,7 +70,7 @@ public class MapFragment extends Fragment implements BackPressInterface {
     private boolean isFirstLocation = true;
     private UserClickInterface clickInterface;
 
-
+    private boolean clickMarker = false;
 
 
     public MapFragment() {
@@ -112,23 +116,49 @@ public class MapFragment extends Fragment implements BackPressInterface {
             public void onMapClick(LatLng point) {
                 if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                     panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                } else if (clickMarker) {
+                    mBaiduMap.hideInfoWindow();
+                    clickMarker = false;
                 }
             }
 
             public boolean onMapPoiClick(MapPoi poi) {
-                return false;
+                if (clickMarker) {
+                    mBaiduMap.hideInfoWindow();
+                    clickMarker = false;
+                    return true;
+                } else
+                    return false;
             }
         });
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             public boolean onMarkerClick(Marker marker) {
+                clickMarker = true;
+                MapStatusUpdate status = MapStatusUpdateFactory.newLatLng(marker.getPosition());
+                mBaiduMap.animateMapStatus(status);//动画的方式到中间
                 Log.i("id:", marker.getId());
                 panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                View windowView = initWindowView();
+                int elses = (int)(WindowUtil.getHEIGHT() / 3.5);
+                InfoWindow infoWindow = new InfoWindow(windowView, marker.getPosition(), elses);
+                mBaiduMap.showInfoWindow(infoWindow);
+
                 return true;
             }
         });
         mMapView.showScaleControl(false);
         mMapView.showZoomControls(false);
         mBaiduMap.setMyLocationEnabled(true);
+    }
+
+    private View initWindowView() {
+        View view = View.inflate(getContext(), R.layout.fragment_map_info_window, null);
+        CardView cardView = view.findViewById(R.id.info_window_card);
+        ViewGroup.LayoutParams params = cardView.getLayoutParams();
+        params.height = WindowUtil.getHEIGHT() / 4;
+        params.width = WindowUtil.getWIDTH() / 10 * 8;
+        cardView.setLayoutParams(params);
+        return view;
     }
 
     private void initView(View view) {
