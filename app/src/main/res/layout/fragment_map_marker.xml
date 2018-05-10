@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="48dp"
     android:layout_height="48dp"
     android:background="@color/toolbar_transparent">
+
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@mipmap/cab"/>
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@mipmap/cab" />
 
 </LinearLayout>

@@ -13,6 +13,7 @@
         android:layout_margin="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardElevation="4dp"
+        app:cardCornerRadius="16dp"
         app:contentPadding="8dp">
 
         <LinearLayout
@@ -25,7 +26,7 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/textview_shape">
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -33,7 +34,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="兰州大学昆仑堂"
+                    android:text="距离"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -75,7 +76,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="兰州大学昆仑堂"
+                    android:text="剩余柜子个数"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
