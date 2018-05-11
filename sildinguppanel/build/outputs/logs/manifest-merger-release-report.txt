@@ -1,0 +1,29 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:1-12:12
+	package
+		ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:3:5-49
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:5:5-32
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:4:5-29
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+		INJECTED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml
+uses-sdk
+ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:7:5-8:38
+	android:minSdkVersion
+		ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:8:9-35
+application
+ADDED from /home/aerberjoy/GitHub/ECab/sildinguppanel/src/main/AndroidManifest.xml:10:5-20
