@@ -2,7 +2,9 @@ package cn.edu.lzu.oss.ecab.fragment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,10 +12,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -23,6 +31,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -43,6 +52,8 @@ import java.util.List;
 
 import cn.edu.lzu.oss.ecab.activities.MainActivity;
 import cn.edu.lzu.oss.ecab.R;
+import cn.edu.lzu.oss.ecab.activities.PayActivity;
+import cn.edu.lzu.oss.ecab.activities.SaveActivity;
 import cn.edu.lzu.oss.ecab.interfaces.BackPressInterface;
 import cn.edu.lzu.oss.ecab.interfaces.UserClickInterface;
 import cn.edu.lzu.oss.ecab.util.WindowUtil;
@@ -66,7 +77,7 @@ public class MapFragment extends Fragment implements BackPressInterface {
     private boolean isFirstLocation = true;
     private UserClickInterface clickInterface;
 
-
+    private boolean clickMarker = false;
 
 
     public MapFragment() {
@@ -89,7 +100,45 @@ public class MapFragment extends Fragment implements BackPressInterface {
         initPanel(view);
         initView(view);
         initPosition();
+        setImageListener(view);
         return view;
+    }
+
+    private void setImageListener(View view) {
+        ImageView add_1 = view.findViewById(R.id.image_add_1);
+        ImageView add_2 = view.findViewById(R.id.image_add_2);
+        ImageView add_3 = view.findViewById(R.id.image_add_3);
+        final TextView length = view.findViewById(R.id.textview_length_number);
+        final TextView width = view.findViewById(R.id.textview_width_number);
+        TextView weight = view.findViewById(R.id.textview_weight_number);
+        View.OnClickListener imageListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.image_add_1:
+                        length.setText("2");
+                        break;
+                    case R.id.image_add_2:
+                        width.setText("2");
+                        break;
+                    case R.id.image_add_3:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+        add_1.setOnClickListener(imageListener);
+        add_2.setOnClickListener(imageListener);
+        add_3.setOnClickListener(imageListener);
+        ImageView imageView = view.findViewById(R.id.imageView8);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SaveActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void setClickInterface(UserClickInterface clickInterface) {
@@ -98,7 +147,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
 
     private void initMap(View view) {
         mMapView = view.findViewById(R.id.baidu_maps);
-        mMapView.removeViewAt(1);
         mBaiduMap = mMapView.getMap();
         MapStatus mMapStatus = new MapStatus.Builder().zoom(18).build();
         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
@@ -112,23 +160,48 @@ public class MapFragment extends Fragment implements BackPressInterface {
             public void onMapClick(LatLng point) {
                 if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                     panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                } else if (clickMarker) {
+                    mBaiduMap.hideInfoWindow();
+                    clickMarker = false;
                 }
             }
 
             public boolean onMapPoiClick(MapPoi poi) {
-                return false;
+                if (clickMarker) {
+                    mBaiduMap.hideInfoWindow();
+                    clickMarker = false;
+                    return true;
+                } else
+                    return false;
             }
         });
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             public boolean onMarkerClick(Marker marker) {
+                clickMarker = true;
+                MapStatusUpdate status = MapStatusUpdateFactory.newLatLng(marker.getPosition());
+                mBaiduMap.animateMapStatus(status);//动画的方式到中间
                 Log.i("id:", marker.getId());
                 panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                View windowView = initWindowView();
+                int elses = (int) (WindowUtil.getHEIGHT() / 5);
+                InfoWindow infoWindow = new InfoWindow(windowView, marker.getPosition(), elses);
+                mBaiduMap.showInfoWindow(infoWindow);
+
                 return true;
             }
         });
         mMapView.showScaleControl(false);
         mMapView.showZoomControls(false);
         mBaiduMap.setMyLocationEnabled(true);
+    }
+
+    private View initWindowView() {
+        View view = View.inflate(getContext(), R.layout.fragment_map_info_window, null);
+        CardView cardView = view.findViewById(R.id.info_window_card);
+        ViewGroup.LayoutParams params = cardView.getLayoutParams();
+        params.width = WindowUtil.getWIDTH() / 10 * 6;
+        cardView.setLayoutParams(params);
+        return view;
     }
 
     private void initView(View view) {
@@ -264,7 +337,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
     public boolean onFragmentBackPress() {
         if (panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-//            panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
             return true;
         } else
             return false;
