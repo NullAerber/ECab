@@ -24,7 +24,6 @@
             <include layout="@layout/divider"/>
 
             <TextView
-                android:id="@+id/ok_button"
                 style="@style/Material_Action"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"

@@ -29,19 +29,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textview_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="长（格）"
+            android:text="高（格）"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_minus_length"
+            android:id="@+id/img_minus_height"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -54,7 +53,7 @@
             app:srcCompat="@mipmap/minus" />
 
         <TextView
-            android:id="@+id/textview_length_number"
+            android:id="@+id/tv_height_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -63,12 +62,12 @@
             android:layout_marginTop="8dp"
             android:text="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_add_length"
-            app:layout_constraintStart_toEndOf="@+id/image_minus_length"
+            app:layout_constraintEnd_toStartOf="@+id/img_add_height"
+            app:layout_constraintStart_toEndOf="@+id/img_minus_height"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_add_1"
+            android:id="@+id/img_add_height"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -94,7 +93,6 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_length">
 
         <TextView
-            android:id="@+id/textview_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -106,7 +104,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_minus_width"
+            android:id="@+id/img_minus_width"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -119,7 +117,7 @@
             app:srcCompat="@mipmap/minus" />
 
         <TextView
-            android:id="@+id/textview_width_number"
+            android:id="@+id/tv_width_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -128,12 +126,12 @@
             android:layout_marginTop="8dp"
             android:text="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_add_width"
-            app:layout_constraintStart_toEndOf="@+id/image_minus_width"
+            app:layout_constraintEnd_toStartOf="@+id/img_add_width"
+            app:layout_constraintStart_toEndOf="@+id/img_minus_width"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_add_2"
+            android:id="@+id/img_add_width"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -160,7 +158,6 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_width">
 
         <TextView
-            android:id="@+id/textview_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -172,7 +169,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_minus_3"
+            android:id="@+id/img_minus_weight"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -185,7 +182,7 @@
             app:srcCompat="@mipmap/minus" />
 
         <TextView
-            android:id="@+id/textview_weight_number"
+            android:id="@+id/tv_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -194,12 +191,12 @@
             android:layout_marginTop="8dp"
             android:text="0～0.5"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_add_3"
-            app:layout_constraintStart_toEndOf="@+id/image_minus_3"
+            app:layout_constraintEnd_toStartOf="@+id/img_add_weight"
+            app:layout_constraintStart_toEndOf="@+id/img_minus_weight"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_add_3"
+            android:id="@+id/img_add_weight"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"

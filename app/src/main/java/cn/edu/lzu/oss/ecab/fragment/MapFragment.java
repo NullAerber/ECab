@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -50,10 +49,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import cn.edu.lzu.oss.ecab.activities.HistoryActivity;
 import cn.edu.lzu.oss.ecab.activities.MainActivity;
 import cn.edu.lzu.oss.ecab.R;
 import cn.edu.lzu.oss.ecab.activities.SaveActivity;
@@ -66,7 +65,7 @@ import cn.edu.lzu.oss.ecab.util.mqtt.MyMqtt;
 
 import static cn.edu.lzu.oss.ecab.util.Const.MapFragmentPermission.BAIDU_READ_PHONE_STATE;
 
-public class MapFragment extends Fragment implements BackPressInterface {
+public class MapFragment extends Fragment implements BackPressInterface, View.OnClickListener {
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private SlidingUpPanelLayout panelLayout;
@@ -85,15 +84,19 @@ public class MapFragment extends Fragment implements BackPressInterface {
 
     private boolean clickMarker = false;
 
-//    /**
-//     * Map Hidden 中的相关控件
-//     */
-//    ImageView add_1;
-//    ImageView add_2;
-//    TextView length;
-//    TextView width;
-//    TextView weight;
-
+    /**
+     * Map Hidden 中的相关控件
+     */
+    ImageView minus_height;
+    ImageView add_height;
+    ImageView minus_width;
+    ImageView add_width;
+    ImageView minus_weight;
+    ImageView add_weight;
+    TextView height;
+    TextView width;
+    TextView weight;
+    ImageView map_ok;
 
     /**
      * MQTT相关参数
@@ -113,7 +116,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
     private ArrayAdapter adapter;//列表视图填充器
     private List<String> message = new ArrayList<>();//消息
 
-
     public MapFragment() {
     }
 
@@ -132,71 +134,12 @@ public class MapFragment extends Fragment implements BackPressInterface {
         context = getActivity();
 
         initMqtt();
-        getLocation();
-
-        initMap(view);
-        initPanel(view);
         initView(view);
+        initMap(view);
         initPosition();
-        setImageListener(view);
+        setListener();
 
         return view;
-    }
-
-    private void setImageListener(View view) {
-        ImageView add_1 = view.findViewById(R.id.image_add_length);
-        ImageView add_2 = view.findViewById(R.id.image_add_width);
-        ImageView add_3 = view.findViewById(R.id.image_add_3);
-        final TextView length = view.findViewById(R.id.textview_length_number);
-        final TextView width = view.findViewById(R.id.textview_width_number);
-        TextView weight = view.findViewById(R.id.textview_weight_number);
-        View.OnClickListener imageListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.image_add_length:
-                        if (Integer.valueOf(length.getText().toString()) > 10)
-                            break;
-                        length.setText(Integer.valueOf(length.getText().toString()) + 1);
-                        break;
-                    case R.id.image_add_width:
-                        if (Integer.valueOf(width.getText().toString()) > 10)
-                            break;
-                        width.setText(Integer.valueOf(width.getText().toString()) + 1);
-                        break;
-                    case R.id.image_minus_length:
-                        if (Integer.valueOf(length.getText().toString()) == 0)
-                            break;
-                        length.setText(Integer.valueOf(length.getText().toString()) - 1);
-                        break;
-                    case R.id.image_minus_width:
-                        if (Integer.valueOf(width.getText().toString()) == 0)
-                            break;
-                        width.setText(Integer.valueOf(width.getText().toString()) - 1);
-                        break;
-                    case R.id.image_add_3:
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-        add_1.setOnClickListener(imageListener);
-        add_2.setOnClickListener(imageListener);
-        add_3.setOnClickListener(imageListener);
-        ImageView map_ok = view.findViewById(R.id.map_ok);
-        map_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getPubMsg(length.getText().toString(), width.getText().toString(),view);
-                Intent intent = new Intent(getActivity(), SaveActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    public void setClickInterface(UserClickInterface clickInterface) {
-        this.clickInterface = clickInterface;
     }
 
     private void initMap(View view) {
@@ -249,6 +192,27 @@ public class MapFragment extends Fragment implements BackPressInterface {
         mBaiduMap.setMyLocationEnabled(true);
     }
 
+    private void initLocation() {
+        Context context = getContext().getApplicationContext();
+        mLocationClient = new LocationClient(context);
+        mLocationListener = new MyBDAbstractLocationListener();
+        /*注册监听*/
+        mLocationClient.registerLocationListener(mLocationListener);
+        /*配置定位*/
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setCoorType("bd09ll");
+        option.setScanSpan(1000);
+        option.setOpenGps(true);
+        option.setLocationNotify(true);
+        option.setIgnoreKillProcess(true);
+        option.SetIgnoreCacheException(false);
+        option.setWifiCacheTimeOut(5 * 60 * 1000);
+        option.setEnableSimulateGps(false);
+        mLocationClient.setLocOption(option);
+        mLocationClient.start();
+    }
+
     private View initWindowView() {
         View view = View.inflate(getContext(), R.layout.fragment_map_info_window, null);
         CardView cardView = view.findViewById(R.id.info_window_card);
@@ -259,6 +223,22 @@ public class MapFragment extends Fragment implements BackPressInterface {
     }
 
     private void initView(View view) {
+        //Panel 初始化
+        panelLayout = view.findViewById(R.id.sliding_layout);
+
+        //Map Hidden
+        minus_height = view.findViewById(R.id.img_minus_height);
+        add_height = view.findViewById(R.id.img_add_height);
+        minus_width = view.findViewById(R.id.img_minus_width);
+        add_width = view.findViewById(R.id.img_add_width);
+        minus_weight = view.findViewById(R.id.img_minus_weight);
+        add_weight = view.findViewById(R.id.img_add_weight);
+
+        height = view.findViewById(R.id.tv_height_num);
+        width = view.findViewById(R.id.tv_width_num);
+        weight = view.findViewById(R.id.tv_weight);
+        map_ok = view.findViewById(R.id.map_ok);
+
         userImage = view.findViewById(R.id.image_user);
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,14 +278,147 @@ public class MapFragment extends Fragment implements BackPressInterface {
         searchCard.setLayoutParams(params);
     }
 
-//    private void initMapHiddenView(View view) {
-//        add_1 = view.findViewById(R.id.image_add_1);
-//        add_2 = view.findViewById(R.id.image_add_2);
-//        add_3 = view.findViewById(R.id.image_add_3);
-//        length = view.findViewById(R.id.textview_length_number);
-//        width = view.findViewById(R.id.textview_width_number);
-//        weight = view.findViewById(R.id.textview_weight_number);
-//    }
+    /**
+     * Method created by Aerber Zhou
+     */
+    private void getLocation() {
+        list_longitude = new ArrayList<>();
+        list_latitude = new ArrayList<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LinkerServer linkerServer = new LinkerServer("get_location");
+                if (linkerServer.Linker()) {
+                    String response = linkerServer.getResponse();
+                    String[] str_record = response.split("\\|");
+                    for (int i = 0; i < str_record.length; ++i) {
+                        String[] record = str_record[i].split(";");
+                        list_longitude.add(record[1]);
+                        list_latitude.add(record[2]);
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.REQUEST_FAIL, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).start();
+    }
+
+    private void initPosition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                MapFragment.this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, BAIDU_READ_PHONE_STATE);
+            else {
+                initLocation();
+            }
+        } else {
+            initLocation();
+        }
+    }
+
+    private void initPoints() {
+        getLocation();
+        points.add(new LatLng(35.949121, 104.160009));
+        points.add(new LatLng(35.94947, 104.16444));
+    }
+
+    private void setMarker(LatLng latLng) {
+        View v = View.inflate(getContext(), R.layout.fragment_map_marker, null);
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromView(v);
+        OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
+        mBaiduMap.addOverlay(option);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_minus_height:
+                if (Integer.valueOf(height.getText().toString()) == 1)
+                    break;
+                height.setText(String.valueOf(Integer.valueOf(height.getText().toString()) - 1));
+                break;
+            case R.id.img_add_height:
+                if (Integer.valueOf(height.getText().toString()) > 10)
+                    break;
+                height.setText(String.valueOf(Integer.valueOf(height.getText().toString()) + 1));
+                break;
+            case R.id.img_minus_width:
+                if (Integer.valueOf(width.getText().toString()) == 1)
+                    break;
+                width.setText(String.valueOf(Integer.valueOf(width.getText().toString()) - 1));
+                break;
+            case R.id.img_add_width:
+                if (Integer.valueOf(width.getText().toString()) > 10)
+                    break;
+                width.setText(String.valueOf(Integer.valueOf(width.getText().toString()) + 1));
+                break;
+            case R.id.img_add_weight:
+                break;
+            case R.id.img_minus_weight:
+                break;
+            case R.id.map_ok:
+                getPubMsg(height.getText().toString(), width.getText().toString(), view);
+                Intent intent = new Intent(getActivity(), SaveActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.map_cancel:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setClickInterface(UserClickInterface clickInterface) {
+        this.clickInterface = clickInterface;
+    }
+
+    private void setListener() {
+//        ImageView add_height = view.findViewById(R.id.image_add_length);
+//        ImageView add_width = view.findViewById(R.id.image_add_width);
+//        ImageView add_weight = view.findViewById(R.id.image_add_3);
+//        final TextView height = view.findViewById(R.id.textview_length_number);
+//        final TextView width = view.findViewById(R.id.textview_width_number);
+//        TextView weight = view.findViewById(R.id.textview_weight_number);
+//        View.OnClickListener imageListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                switch (view.getId()) {
+//                    case R.id.image_add_length:
+//                        if (Integer.valueOf(height.getText().toString()) > 10)
+//                            break;
+//                        height.setText(Integer.valueOf(height.getText().toString()) + 1);
+//                        break;
+//                    case R.id.image_add_width:
+//                        if (Integer.valueOf(width.getText().toString()) > 10)
+//                            break;
+//                        width.setText(Integer.valueOf(width.getText().toString()) + 1);
+//                        break;
+//                    case R.id.image_minus_length:
+//                        if (Integer.valueOf(height.getText().toString()) == 0)
+//                            break;
+//                        height.setText(Integer.valueOf(height.getText().toString()) - 1);
+//                        break;
+//                    case R.id.image_minus_width:
+//                        if (Integer.valueOf(width.getText().toString()) == 0)
+//                            break;
+//                        width.setText(Integer.valueOf(width.getText().toString()) - 1);
+//                        break;
+//                    case R.id.image_add_3:
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        };
+        minus_height.setOnClickListener(this);
+        add_height.setOnClickListener(this);
+        minus_width.setOnClickListener(this);
+        add_width.setOnClickListener(this);
+        minus_weight.setOnClickListener(this);
+        add_weight.setOnClickListener(this);
+        map_ok.setOnClickListener(this);
+    }
 
     public class MyBDAbstractLocationListener extends BDAbstractLocationListener {
         @Override
@@ -332,45 +445,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
         }
     }
 
-    private void initLocation() {
-        Context context = getContext().getApplicationContext();
-        mLocationClient = new LocationClient(context);
-        mLocationListener = new MyBDAbstractLocationListener();
-        /*注册监听*/
-        mLocationClient.registerLocationListener(mLocationListener);
-        /*配置定位*/
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        option.setCoorType("bd09ll");
-        option.setScanSpan(1000);
-        option.setOpenGps(true);
-        option.setLocationNotify(true);
-        option.setIgnoreKillProcess(true);
-        option.SetIgnoreCacheException(false);
-        option.setWifiCacheTimeOut(5 * 60 * 1000);
-        option.setEnableSimulateGps(false);
-        mLocationClient.setLocOption(option);
-        mLocationClient.start();
-    }
-
-    private void initPanel(View view) {
-        panelLayout = view.findViewById(R.id.sliding_layout);
-    }
-
-    private void initPosition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                MapFragment.this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, BAIDU_READ_PHONE_STATE);
-            else {
-                initLocation();
-            }
-        } else {
-            initLocation();
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -381,18 +455,6 @@ public class MapFragment extends Fragment implements BackPressInterface {
         } else {
             Toast.makeText(getActivity(), "获取权限失败", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void setMarker(LatLng latLng) {
-        View v = View.inflate(getContext(), R.layout.fragment_map_marker, null);
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromView(v);
-        OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
-        mBaiduMap.addOverlay(option);
-    }
-
-    private void initPoints() {
-        points.add(new LatLng(35.949121, 104.160009));
-        points.add(new LatLng(35.94947, 104.16444));
     }
 
     @Override
@@ -473,40 +535,9 @@ public class MapFragment extends Fragment implements BackPressInterface {
                     for (int i = 0; i < str_record.length; ++i) {
                         String[] record = str_record[i].split(";");
                         myMqtt.pubMsg(record[0], record[1], 1);//发送消息
+                        Log.i(TAG, Arrays.toString(record));
                     }
-                    Snackbar.make(view, "已经成功", Snackbar.LENGTH_LONG)
-                            .setAction("查看详情", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(getContext(), HistoryActivity.class);
-//                                    intent.putExtra(getString(R.string.URL), id);
-                                    getContext().startActivity(intent);
-                                }
-                            }).show();
-                } else {
-                    Toast.makeText(getContext(), R.string.REQUEST_FAIL, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).start();
-    }
 
-    /* Method created by Aerber Zhou
-     */
-    private void getLocation() {
-        list_longitude = new ArrayList<>();
-        list_latitude = new ArrayList<>();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LinkerServer linkerServer = new LinkerServer("get_location");
-                if (linkerServer.Linker()) {
-                    String response = linkerServer.getResponse();
-                    String[] str_record = response.split("\\|");
-                    for (int i = 0; i < str_record.length; ++i) {
-                        String[] record = str_record[i].split(";");
-                        list_longitude.add(record[1]);
-                        list_latitude.add(record[2]);
-                    }
                 } else {
                     Toast.makeText(getContext(), R.string.REQUEST_FAIL, Toast.LENGTH_SHORT).show();
                 }

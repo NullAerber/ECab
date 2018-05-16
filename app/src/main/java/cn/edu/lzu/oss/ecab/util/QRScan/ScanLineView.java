@@ -9,7 +9,8 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
-import aerber.easyboard.R;
+import cn.edu.lzu.oss.ecab.R;
+
 
 public class ScanLineView extends View {
     Paint paint = new Paint();
